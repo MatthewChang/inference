@@ -1,0 +1,13 @@
+# @package _global_
+
+defaults:
+  - _self_
+
+metadata:
+  _target_: inference.run_inference.MetadataHandler
+
+processor:
+  _target_: inference.run_inference.InferenceProcessor
+
+num_threads: 1
+gpus_per_thread: 1
