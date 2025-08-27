@@ -1,11 +1,6 @@
 # Inference Package
 
-This is a Python package for running inference using cycle diffusion processors and handling Synthia datasets.
-
-## Features
-- Cycle diffusion processing
-- Synthia dataset handling
-- Configurable via YAML files
+This is a Python package for running inference parallelizable on slurm
 
 ## Installation
 
@@ -19,15 +14,14 @@ pip install .
 
 ### Running Inference
 
-You can run inference using the `run_inference.py` script. For example:
+You can run inference using the `run_inference` script. For example to run the exponentation example:
 
 ```bash
-python run_inference.py
+python -m inference.run_inference --config-path configs --config-name example.yaml
 ```
 
-### Configuration
+Configs should specify two instiantiable keys `metadata` and `processor`, which define the elements to be processed, and the code to processes them respectivly. See [inference/configs/example.yaml](inference/configs/example.yaml) for an example config which can be easily modified.
 
-Configurations can be modified in the `configs/sim2real.yaml` file.
 
 ## License
 

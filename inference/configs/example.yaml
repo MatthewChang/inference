@@ -4,10 +4,10 @@ defaults:
   - _self_
 
 metadata:
-  _target_: inference.run_inference.MetadataHandler
+  _target_: inference.examples.exponent.Numbers
 
 processor:
-  _target_: inference.run_inference.InferenceProcessor
+  _target_: inference.examples.exponent.Exponent
 
 num_threads: 1
 gpus_per_thread: 1

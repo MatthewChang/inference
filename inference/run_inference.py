@@ -16,12 +16,14 @@ from inference.base import InferenceProcessor, MetadataHandler
 def process_chunk(metadata_handler: MetadataHandler, cfg, chunk):
     dataset = metadata_handler.get_dataset(chunk)
     processor: InferenceProcessor = hydra.utils.instantiate(cfg.processor)
+    batch_size = cfg.get('batch_size',1)
+    num_workers = cfg.get('num_workers',1)
     dataloader = DataLoader(
         dataset,
-        batch_size=1,  # Adjust based on your GPU memory
+        batch_size=batch_size,  # Adjust based on your GPU memory
         shuffle=False,
         collate_fn=processor.collate_fn,
-        num_workers=4,
+        num_workers=num_workers,
     )
 
     # Process in batches
@@ -30,15 +32,19 @@ def process_chunk(metadata_handler: MetadataHandler, cfg, chunk):
     processor.on_end()
 
 
+# todo implement numpy array split in a way which does not transform everything to numpy arrays
+
 @hydra.main(
     # config_path="../../../conf/finetuning",
     # config_path="configs",
-    config_name="inference/inference.yaml",
     version_base=None,
 )
 def main(cfg: DictConfig):
     print(cfg)
     metadata_handler = hydra.utils.instantiate(cfg.metadata)
+    if cfg.get('info',False):
+        metadata_handler.info()
+        exit()
     num_threads = cfg.num_threads
     chunks = np.array_split(metadata_handler.get_data(), num_threads)
 
