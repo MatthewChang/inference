@@ -31,16 +31,7 @@ def process_chunk(metadata_handler: MetadataHandler, cfg, chunk):
         processor.process_batch(batch)
     processor.on_end()
 
-
-# todo implement numpy array split in a way which does not transform everything to numpy arrays
-
-@hydra.main(
-    # config_path="../../../conf/finetuning",
-    # config_path="configs",
-    version_base=None,
-)
-def main(cfg: DictConfig):
-    print(cfg)
+def run_config(cfg: DictConfig):
     metadata_handler = hydra.utils.instantiate(cfg.metadata)
     if cfg.get('info',False):
         metadata_handler.info()
@@ -69,6 +60,17 @@ def main(cfg: DictConfig):
     else:
         process_chunk(metadata_handler, cfg, list(chunks[0]))
 
+
+# todo implement numpy array split in a way which does not transform everything to numpy arrays
+
+@hydra.main(
+    # config_path="../../../conf/finetuning",
+    # config_path="configs",
+    version_base=None,
+)
+def main(cfg: DictConfig):
+    print(cfg)
+    run_config(cfg)
 
 if __name__ == "__main__":
     main()
