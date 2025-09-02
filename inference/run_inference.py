@@ -37,17 +37,23 @@ def run_config(cfg: DictConfig):
         metadata_handler.info()
         exit()
     num_threads = cfg.num_threads
-    chunks = np.array_split(metadata_handler.get_data(), num_threads)
+    data = metadata_handler.get_data()
+    if num_threads > len(data):
+        print(f'Requested {num_threads} threads, but only {len(data)} data chunks available. Reducing threads.')
+        num_chunks = len(data)
+    else:
+        num_chunks = num_threads
+    chunks = np.array_split(metadata_handler.get_data(), num_chunks)
 
     if num_threads > 1:
         executor = submitit.AutoExecutor(folder="log_submitit")
         executor.update_parameters(
             timeout_min=60 * 24,
-            cpus_per_task=12,  # Adjust based on your needs
-            gpus_per_node=cfg.gpus_per_thread,  # Adjust based on your needs
-            slurm_account="siro",
-            slurm_qos="siro_high",
-            slurm_job_name="inference",
+            cpus_per_task=cfg.get('cpus_per_task',12),
+            gpus_per_node=cfg.gpus_per_thread,
+            slurm_account=cfg.get('slurm_account',"siro"),
+            slurm_qos=cfg.get('slurm_qos',"siro_high"),
+            slurm_job_name=cfg.get('slurm_job_name',"inference"),
         )
 
         jobs = []
