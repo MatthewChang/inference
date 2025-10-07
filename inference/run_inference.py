@@ -51,8 +51,8 @@ def run_config(cfg: DictConfig):
             timeout_min=60 * 24,
             cpus_per_task=cfg.get('cpus_per_task',12),
             gpus_per_node=cfg.gpus_per_thread,
-            slurm_account=cfg.get('slurm_account',"siro"),
-            slurm_qos=cfg.get('slurm_qos',"siro_high"),
+            slurm_account=cfg.get('slurm_account',""),
+            slurm_qos=cfg.get('slurm_qos',""),
             slurm_job_name=cfg.get('slurm_job_name',"inference"),
         )
 
