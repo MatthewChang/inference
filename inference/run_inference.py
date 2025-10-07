@@ -45,15 +45,21 @@ def run_config(cfg: DictConfig):
         num_chunks = num_threads
     chunks = np.array_split(metadata_handler.get_data(), num_chunks)
 
-    if num_threads > 1:
+    if num_threads > 1 or cfg.get('use_slurm',False):
         executor = submitit.AutoExecutor(folder="log_submitit")
+        args = {}
+        if 'mem' in cfg:
+            args['mem'] = cfg.mem
+        if 'slurm_partition' in cfg:
+            args['slurm_partition'] = cfg.slurm_partition
+        if 'slurm_qos' in cfg:
+            args['slurm_qos'] = cfg.slurm_qos
         executor.update_parameters(
-            timeout_min=60 * 24,
+            timeout_min=cfg.get('timeout_min',60 * 24 * 7),
             cpus_per_task=cfg.get('cpus_per_task',12),
             gpus_per_node=cfg.gpus_per_thread,
-            slurm_account=cfg.get('slurm_account',""),
-            slurm_qos=cfg.get('slurm_qos',""),
             slurm_job_name=cfg.get('slurm_job_name',"inference"),
+            **args
         )
 
         jobs = []
