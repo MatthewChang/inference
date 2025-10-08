@@ -52,6 +52,8 @@ def run_config(cfg: DictConfig):
             args['mem'] = cfg.mem
         if 'slurm_partition' in cfg:
             args['slurm_partition'] = cfg.slurm_partition
+        if 'slurm_account' in cfg:
+            args['slurm_account'] = cfg.slurm_account
         if 'slurm_qos' in cfg:
             args['slurm_qos'] = cfg.slurm_qos
         executor.update_parameters(
